@@ -1,0 +1,30 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hugeinteger;
+/**
+ *
+ * @author Ridwan
+ */
+public class HugeInteger  {
+    public static void main(String[] args) {
+        String str = "-35";
+        String str2 = "-27";
+   
+        HugeInteger test1 = new HugeInteger(str);
+        HugeInteger test2 = new HugeInteger(str2);
+        
+        System.out.println(test1.compareTo(test2));
+        HugeInteger addition = test1.add(test2);
+        System.out.println("addto " + addition.toString());
+        HugeInteger subtraction = test1.subtract(test2);
+        System.out.println("subto " + subtraction.toString());        
+        System.out.println(test1.multiply(test2));
+       
+        HugeInteger test3 = new HugeInteger(4);
+        System.out.println(test3.toString());
+    
+      
+    }
+}

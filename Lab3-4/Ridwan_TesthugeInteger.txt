@@ -1,0 +1,436 @@
+package testhugeinteger;
+import java.util.Random;
+/**
+ *
+ * @author Ridwan-Al Fahim
+ */
+public class HugeInteger {
+    int size; //instance fields of HugeInteger object
+    private boolean negative;
+    public int [] hugearray = null;
+    
+    public HugeInteger(String val){//creates aHuge Integerfrom the decimal String rep val, nothing elseaccepted
+        int on=0;
+        size=val.length();
+        if(val.charAt(0)=='-'){ // if the first characvalue is a -, then it's a negative #.
+           this.negative=true;
+           size=size-1; //subtract one size due to the - sign
+           on=1; //need to accomodate for the - sign
+        }
+        else
+        {
+            this.negative=false; //its a positive # if the first value isnt -
+        }    
+       
+        hugearray= new int[size]; //setting the instance field array equal to an integeger array of size of string length-1.
+        for(int i=0;i<size;i++)
+        {
+            hugearray[i]= Character.getNumericValue(val.charAt(i+on)); //loops through the string and inputs each character into the array
+        }
+        
+    }
+    
+    public HugeInteger(int n){//create a random HugeInt of n digits
+       this.hugearray=new int[n];
+       size= n;
+       int i=0;
+       Random random=new Random();
+       this.negative=random.nextBoolean();
+       for(i=0;i<size;i++){ //n larger than or eqal to 1
+           this.hugearray[i]=random.nextInt(10);
+       }
+           
+    }
+    
+    public HugeInteger add(HugeInteger h){
+        int tempsize;
+        int carry=0;
+        int sizediff1=0;
+        int sizediff2=0;
+        int orgdig;
+        int othdig;
+        int finalsum;
+        if(h.size>this.size){  //checking to see what size the temp array will be. chose larger size
+            tempsize=h.size;
+            sizediff1=h.size-this.size;
+        }
+        else{                      //taking diff for indexing
+            tempsize=this.size;
+            sizediff2=this.size-h.size;
+        }
+        
+        if(this.negative==h.negative){  //checking if the signs are the same 
+            HugeInteger temp=new HugeInteger(tempsize);  //assigning a new hugeinteger of size tempsize;
+            temp.negative=false;
+            for(int i=tempsize;i>0;i--){
+                int index1=i-1-sizediff1; //keeping track of index
+                int index2=i-1-sizediff2; //looping backwards
+                
+                if(index1>=0){ //get to front
+                    orgdig=hugearray[index1];   //making sure we reached the front, storing my original index.
+                }
+                else{
+                    orgdig=0;
+                }
+                if(index2>=0){
+                    othdig=h.hugearray[index2]; //same thing but for h array
+                }
+                else{
+                    othdig=0;
+                }
+                finalsum=orgdig+othdig+carry;  //adding the two numbers
+                if(finalsum>9){        //we have a carry
+                    finalsum=finalsum%10;  //(12%10=2, the number is 2 with a carry of 1 -- MOD (moduel)
+                    carry=1;
+                    temp.hugearray[i-1]=finalsum;  //inputing all the values into my temp HugeInteger
+                }
+                else{
+                    carry=0; //no carry, input the values
+                    temp.hugearray[i-1]=finalsum;  //input value into temporary interget.
+                }
+            }
+            if(carry==1){   //if the final carry is 1 (the first digit), create a new HugeInteger of size tempsize+1 to accomodate for the carry
+                HugeInteger output =new HugeInteger(tempsize+1);
+                output.hugearray[0]=carry; //setting first value for carry
+                for(int i=1;i<(tempsize+1);i++){  //copying over the values
+                    output.hugearray[i]=temp.hugearray[i-1];
+                }
+                if(h.negative==true){
+                    output.negative=true;   //if its negative, then the output is negative
+                    return deletezeros(output);
+                    
+                }
+                if(h.negative==false){
+                    output.negative=false; //vice versa (postive, then output positive?)
+                    return deletezeros(output); //deleating leading zeros
+                }
+            }
+            else //final carry =0
+            {
+                HugeInteger output= temp; //final output is equal to temp
+                if(negative== true)
+                {
+                    output.negative= true;
+                    return deletezeros(output); //same, if its negative, then the output is negative
+                }
+                else
+                {
+                    output.negative= false;
+                    return deletezeros(output);
+                }
+            }
+        }
+        
+        
+            HugeInteger output = subtract(h); 
+            return deletezeros(output);
+        
+    }
+        
+
+    public HugeInteger subtract(HugeInteger h)
+    {
+        int tempsize;
+        int borrow=0;
+        int sizediff1=0;
+        int sizediff2=0;
+        int orgdig=0;
+        int othdig=0;
+        int finalsum;
+        
+        if(h.size>this.size){    ///checking to see what size the temp array will be.take larger
+            tempsize=h.size;
+            sizediff1=h.size-this.size;
+        }
+        else{                           
+            tempsize=this.size;
+            sizediff2=this.size-h.size;
+        }
+        
+        
+        if(h.negative!=this.negative){   //if h not neg
+            HugeInteger temp= new HugeInteger(tempsize); ///assigning a new hugeinteger of size tempsize;
+            temp.negative=false;
+            for(int i=tempsize;i>0;i--){
+                int index1=i-1-sizediff1; //keeping track of idex
+                int index2=i-1-sizediff2; //looping backwards
+                
+                if(this.negative==false && h.negative==true){
+                    h.negative=false;
+                    if((this.compareTo(h)==0) || this.compareTo(h)==1){
+                        if(index1>=0){                    ////making sure we reached the front, storing my original index.
+                            orgdig=hugearray[index1];
+                        }
+                        else
+                            orgdig=0;
+                    
+                        if(index2>=0)
+                        {
+                            othdig=h.hugearray[index2];
+                        }
+                                else{
+                                    othdig=0;
+                                     }
+                        temp.negative=false;
+                        
+                    }  
+                    if(compareTo(h)==-1)
+                    {
+                        if(index2>=0){
+                            orgdig=h.hugearray[index2];
+                        }
+                        else
+                            orgdig=0;
+                        
+                        if(index1>=0){
+                            othdig=hugearray[index1];
+                        }
+                        else
+                            othdig=0;
+                        
+                        temp.negative=true;
+                        
+                     }
+                     h.negative= true;
+                    
+                }
+                if(this.negative==true && h.negative==false){ //diff cases to input 0,1 or -1.
+                    this.negative=false;
+                    if(this.compareTo(h)==0 || this.compareTo(h)==-1){
+                        if(index2>=0){
+                            orgdig=h.hugearray[index2];
+                        }
+                        else
+                            orgdig=0;
+                        if(index1>=0){
+                            othdig=hugearray[index1];
+                        }
+                        else
+                            othdig=0;
+                        
+                        temp.negative=false;
+                    }
+                    if(this.compareTo(h)==1){
+                        if(index1>=0){
+                            orgdig=hugearray[index1];
+                        }
+                        else 
+                            orgdig=0;
+                        
+                        if(index2>=0)
+                        {
+                            othdig=h.hugearray[index2];
+                        }
+                        else
+                            othdig=0;
+                        temp.negative= true;
+                    }
+                    this.negative= true;
+                }
+                finalsum=orgdig-othdig-borrow;
+                if(finalsum<0)
+                {
+                    finalsum=finalsum+10;
+                    borrow=1;
+                    temp.hugearray[i-1]=finalsum;
+                }
+                else
+                {
+                    borrow=0;
+                    temp.hugearray[i-1]=finalsum;
+                }
+          }
+            return temp;
+        }
+        else
+        {
+            if((this.negative==false) && h.negative==false)
+            {
+                h.negative=true;
+                HugeInteger temp=add(h);
+                h.negative=false;
+                return temp;
+            }
+            if(this.negative==true && h.negative==true){
+                h.negative=false;
+                HugeInteger temp=add(h);
+                h.negative=true;
+                return temp;
+            }
+            if(this.negative==true && h.negative==false){
+                h.negative=true;
+                HugeInteger temp=add(h);
+                h.negative=false;
+                return temp;
+            }
+            else{
+                h.negative=false;
+                HugeInteger temp=add(h);
+                h.negative=true;
+                return temp;
+            }
+                
+        }
+        
+        
+    }
+    
+    public HugeInteger multiply (HugeInteger h)
+    {
+        int carry=0;
+        int x=0;
+        int y=0;
+        String product="";
+        int orgdig=0;
+        int othdig=0;
+        int finalsum=0;
+        int tempsize1=size;
+        int tempsize2=h.size;
+        HugeInteger output=new HugeInteger("0"); //Making HugeInteger with just string 0 in it
+        
+        
+        if(tempsize1>tempsize2 || tempsize1==tempsize2) //Comparing sizes
+        {
+            x=tempsize1; //Setting x the size of the larger value
+            y=tempsize2; //Setting y the lower size
+        }
+        if(tempsize1<tempsize2)
+        {
+            x=tempsize2; //setting x the larger size, y the lower
+            y=tempsize1;
+        }
+        
+        for(int i=y;i>0;i--) //looping backwards , least significant
+        {
+            product="";
+            if(tempsize1>tempsize2 || tempsize1==tempsize2)  //tempsize1 is greater or equal to tempsize2
+            {
+                orgdig=h.hugearray[i-1]; //setting the index, importing values of h.hugearray into orgdig, if larger or equal use h.
+            }
+            if(tempsize1<tempsize2)
+            {
+                orgdig=hugearray[i-1]; //checking which one is smaller, if smaller use this
+            }
+            
+            for(int j=y-i;j>0;j--)
+            {
+                product=product+0; //adding 0 for the one digit moved over (96 instead of 9+6)
+            }
+            for(int k=x;k>0;k--)
+            {
+                if(tempsize1>tempsize2 || tempsize1==tempsize2)
+                {
+                    othdig=hugearray[k-1]; //same thing for other digit
+                }
+                if(tempsize1<tempsize2)
+                {
+                    othdig=h.hugearray[k-1];
+                }
+                finalsum=(orgdig*othdig+carry)%10; //Accounting for the carry.
+                carry=(orgdig*othdig+carry)/10; //(12/10) = 1, the carry (28/10)=2
+                product=product+finalsum; //adding the final product every time.
+                
+                if(k-1==0) //approaching the front of the array
+                {
+                    product=product+carry; //adding in the final carry
+                    carry=0; //carry = 0
+                    product=new StringBuilder(product).reverse().toString(); //reversing the string. 
+                    //(adds to the top so we much reverse for strings)
+                    HugeInteger finalout = new HugeInteger(product); 
+                    //calling my constuctor the string named product to convert to an integer array
+                    output=output.add(finalout); //adding my final string back into my output string.
+                }
+            }
+        }
+        if(this.negative!=h.negative)
+        {
+            output.negative=true; //checking the signs, if they are differernt then the output is negative
+        }
+        return output;
+        
+    }
+            
+    
+    public HugeInteger deletezeros(HugeInteger h){
+        int counter=0;
+        for(int i=0;i<h.size;i++){ 
+            if (h.hugearray[i]==0){ //if any value is zero, add it to counter 
+                counter++; //storing each appearance of 0, adds it to counter
+              
+            }
+            else
+                break; //breaks when first occurnace of digit appears
+        }
+        HugeInteger wozeros = new HugeInteger(h.size-counter); //new HugeInteger with size actual-#ofzeros
+        for(int j=0;j<h.size-counter;j++){
+            wozeros.hugearray[j]=h.hugearray[j+counter]; //import all the values
+            }
+        wozeros.negative=h.negative;
+        return wozeros;
+    }
+    
+    public String toString(){   //returns a string rep sequence of digits
+        String output="";
+        if(this.negative==true) {
+            output=output+"-";
+        }
+        try{
+            output=output+this.hugearray[0];
+        }catch(ArrayIndexOutOfBoundsException ex){
+            return "0";
+        }
+        
+        
+        for(int i=1;i<this.size;i++){
+            output=output+this.hugearray[i];
+        }
+        return output;
+    }
+    
+    public int compareTo(HugeInteger h){ //1 if hugeint is larger than h, -1 if hugein is smaller
+        if(negative==false && h.negative==true){ //signs arent the same
+            return 1;
+        }
+        else if(negative==true && h.negative==false){
+            return -1;
+        }
+        else //signs are the same, + or -, "length" isnt
+        {
+           if(size>h.size){  
+               if (negative==false){ //this is position AND greater than h, so bigger
+                   return 1;
+               }
+               else //so if this is negative but less, return -1
+                   return -1;
+           }
+           else if(h.size>size){ //if h is greater 
+               if(negative==true){//this is negative,
+                   return 1; //this is greater and return 1.
+               }
+               else
+                   return -1; //both are positve, and h is greater, therefore return -1
+           }
+           else //signs are the same, and the length
+               for(int i=0;i<size;i++){ 
+                   if(hugearray[i]>h.hugearray[i]){ //looping through the array
+                       if(negative==false){ //this is greater than h
+                           return 1;
+                       }
+                       else
+                           return -1; //negative is true, so we return -1.
+                   }
+                   else if(hugearray[i]<h.hugearray[i]){ 
+                       if(negative==false){
+                           return -1;
+                       }
+                       else
+                           return 1;
+                   }
+                   else
+                       continue;
+               }
+        }
+        return 0;
+}
+        
+}

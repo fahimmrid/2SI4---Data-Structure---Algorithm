@@ -1,0 +1,200 @@
+package Lab1;
+
+/**
+ *
+ * @author Ridwan
+ */
+public class Lab1 {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) 
+    {
+        
+        
+        //Test for constructor 1 WordList(cap)
+        
+        int cap = 10;
+        
+        WordList emptyList = new WordList(cap);
+        
+        System.out.println("This is the empty word list of length 10");
+        System.out.println(emptyList.toString());
+        System.out.println("The Number of words in the list is: " + emptyList.getSize());
+        System.out.println("The capacity of the list is: " + emptyList.getCapacity() + "\n");
+        
+        
+        
+      
+      //Test for constructor 2 WordList(Array) length of 4
+      String[] a = {"alpha","beta","charlie","delta"};
+      WordList b = new WordList(a);
+      System.out.println("This is the word list of length 4");
+      System.out.println(b.toString());
+      System.out.println("The Number of words in the list is: " + b.getSize());
+      System.out.println("The capacity of the list is: " + b.getCapacity() + "\n");
+        
+      
+      
+      //Constructor 2 test length of 8
+      String[] a2 = {"alpha","beta","charlie","delta","eshlon","falcon","go","halo"};
+      WordList b2 = new WordList(a2);
+      System.out.println("This is the word list of length 8");
+      System.out.println(b2.toString());
+      System.out.println("The Number of words in the list is: " + b2.getSize());
+      System.out.println("The capacity of the list is: " + b2.getCapacity() + "\n");
+        
+      
+      //GetWordAt test for position 0
+      System.out.println("Getting word at position 0");
+      try
+      {
+      System.out.println(b.getWordAt(0)); //not working
+      }
+      catch(IndexOutOfBoundsException e)
+      {
+          System.out.println(e);
+      }
+      
+     
+      
+      System.out.println("Getting word at position 2");
+      try
+      {
+      System.out.println(b.getWordAt(2)); //not working
+      }
+      catch(IndexOutOfBoundsException e)
+      {
+          System.out.println(e);
+      }
+      
+      System.out.println("Getting word at position 3");
+      try
+      {
+      System.out.println(b.getWordAt(3)); //not working
+      }
+      catch(IndexOutOfBoundsException e)
+      {
+          System.out.println(e);
+      }
+ 
+      //Get word at case that doesnt exist
+      System.out.println("Getting word at position 6 (Doesn't exist case)");
+      try
+      {
+      System.out.println(b.getWordAt(6)); //not working
+      }
+      catch(IndexOutOfBoundsException e)
+      {
+          System.out.println(e);
+      }
+      
+      //Get word at case that doesnt exist (negative value)
+      System.out.println("Getting word at position -1 (Doesn't exist case)");
+      try
+      {
+      System.out.println(b.getWordAt(-1)); //not working
+      }
+      catch(IndexOutOfBoundsException e)
+      {
+          System.out.println(e);
+      }
+      System.out.println("");
+      
+      
+      //Insert method test 1
+      
+      System.out.println("Inserting 1 word to a length of 4 list");
+      b.insert("bone");
+      System.out.println(b.toString());
+      
+      //Insert method test 2 
+      System.out.println("Inserting 2nd word to a length of 5 list");
+      b.insert("distance");
+      System.out.println(b.toString());
+      
+       //Insert method test 3 (Overload) 
+      System.out.println("Inserting overload of words to a length of 6 list having a capacity of 8");
+      
+      b.insert("zoo");
+      b.insert("telephone");
+      b.insert("arthur");
+      System.out.println(b.toString());
+      System.out.println("The Number of words in the list is: " + b.getSize());
+      System.out.println("The capacity of the list is: " + b.getCapacity() + "\n");
+        
+        //Insert method test 4 adding the same word 
+      System.out.println("Inserting a word that's already in the list(alpha)");
+      b.insert("alpha");
+      System.out.println(b.toString());
+      
+      //Inserting method test 5 adding a word in an empty list
+      System.out.println("Inserting a word in an empty list");
+      emptyList.insert("alpha");
+      System.out.println(emptyList.toString());
+     
+      
+      //Find method test 1 finding telephone
+      System.out.println("Position of the word telephone is:" + b.find("telephone"));
+      System.out.println(b.toString());
+      
+      //Find method test 2 finding bone
+      System.out.println("Position of the word bone is:" + b.find("bone"));
+      System.out.println(b.toString());
+      
+      
+       //Find method test 3 finding bobby which is not in the list
+      System.out.println("Position of the word bobby is:" + b.find("bobby"));
+      System.out.println("Doesn't exist");
+      System.out.println(b.toString());
+      
+      System.out.println("");
+      
+      //Remove method test 1 removing alpha (first word)
+      System.out.println("This is removing alpha word");
+      b.remove("alpha");
+      System.out.println(b.toString());
+       System.out.println("The Number of words in the list is: " + b.getSize());
+      System.out.println("The capacity of the list is: " + b.getCapacity() + "\n");
+      
+      
+      
+      //Removing method test 2 removing a second word (zoo) (last word)
+      System.out.println("This is removing zoo");
+      b.remove("zoo");
+      System.out.println(b.toString());
+      System.out.println("The Number of words in the list is: " + b.getSize());
+      System.out.println("The capacity of the list is: " + b.getCapacity() + "\n");
+      
+      
+      //Sublist method test 1
+      System.out.println("This is the sublist from a to d");
+      WordList list1 = b.sublist('a', 'd');
+      System.out.println(list1.toString());
+      System.out.println("The Number of words in the list is: " + list1.getSize());
+      System.out.println("The capacity of the list is: " + list1.getCapacity() + "\n");
+      
+      //Sublist method test 2 b to d
+      System.out.println("This is the sublist from b to d");
+      System.out.println(b.toString());
+      WordList list2 = b.sublist('b', 'd');
+      System.out.println(list2.toString());
+      System.out.println("The Number of words in the list is: " + list2.getSize());
+      System.out.println("The capacity of the list is: " + list2.getCapacity() + "\n");
+         
+      
+      //Count in range method test 1
+      System.out.println("This is counting from a to d");
+       System.out.println(b.toString());
+       System.out.println(b.countInRange('a', 'd'));
+       
+       System.out.println("");
+       //Count in range method test2 b to d
+       System.out.println("This is counting from b to d");
+       System.out.println(b.toString());
+       System.out.println(b.countInRange('b', 'd'));
+      
+    }
+    
+}

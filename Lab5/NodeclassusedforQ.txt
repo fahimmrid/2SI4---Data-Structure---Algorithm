@@ -1,0 +1,16 @@
+package lab5;
+
+/**
+ *
+ * @author Ridwan
+ */
+//import java.util.LinkedList;
+public class Node<E> { 
+    TNode element; 
+    Node<E> next; 
+
+public Node (TNode e, Node<E> n) {
+    element = e;
+    next = n;
+    
+}}

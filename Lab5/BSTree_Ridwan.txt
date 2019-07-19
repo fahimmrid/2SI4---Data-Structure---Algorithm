@@ -1,0 +1,224 @@
+package lab5;
+/**
+ *
+ * @author Ridwan
+ */
+
+//import java.util.Queue;
+//import java.util.Stack;
+                
+public class BSTree {
+    
+  private int size;//DONT really use anyways. size = 0;  //keeps track of elements in tree
+    private TNode root;   //tree rep by reference to the root node.the root of tree
+  
+    
+    public BSTree(){                          //constructor for empty case
+        root = null; //, initized by set root ref to null
+       size = 0;  //init
+    }
+    
+    public BSTree(int[] sortedInput){  //create of minimum height, sorted, no repetition //constructor for handling array input
+        for(int i=0;i<sortedInput.length;i++){    //inputs all elemnts of the array into tree
+            add(sortedInput[i]);
+        }
+    }
+    
+    private TNode insertTree(int v, TNode t){     //inserts a value sent ot this method into the tree
+        if(t==null){                               //if null make the current t into an element of the tree with value v
+            t = new TNode(v,null,null); 
+            size++;
+        }else if(v<t.element){  //if less than root go left  //if element is smaller branch left
+            t.left = insertTree(v, t.left);            
+        }else if(v>t.element){                        //if element is bigger branch right
+            t.right = insertTree(v, t.right);            
+        }
+        return t;
+    }
+    
+    public boolean searchTree(int v, TNode t){            //search inside tree for element v
+         
+        t = root;
+        boolean check = false;
+        
+        
+        while((t.right != null)||(t.left!=null)){            //until an element with no children(meaning can't go further into tree)
+            
+            if(v<t.element){                   //if element is smaller branch left
+                t = t.left;            
+            }else if(v>t.element){                 //if element is bigger branch right
+                t = t.right;            
+            }
+            if(t.element == v){               //if element in tree return true
+                return true;
+            }
+        }
+        
+        return false ;
+    }
+    
+    public TNode removeTree(int v, TNode t){        //remove an element from tree
+                            
+            if(v<t.element){                             //if element is smaller branch left      
+                t.left = removeTree(v,t.left);            
+            }else if(v>t.element){                     //if element is bigger branch right
+                t.right = removeTree(v,t.right);            
+            }else if(t.left!=null && t.right!=null){  //if element found has two children make min value from current node as the root and remove min value
+                t.element = findTreeMin(t.right); //starting at right child find min
+                t.right = removeMin(t.right); //routin method which removes min value
+            }
+            else                                         //if one child then make either the right or left child(whichever exists) into the current node
+                t = (t.left!=null)? t.left : t.right;    //with atmost one child
+        
+        return t;
+    }
+    
+    public int findTreeMin(TNode t){        //find minimum element in tree
+                
+        while(t.left!=null){ //while current node has left child     
+            t=t.left;  //advance along left, go as left as possible
+        }
+        return t.element;   //since min is left
+    }
+    
+    public TNode removeMin(TNode t){
+        
+        while(t.left!=null){      //, not empty go as left as possible
+            t=t.left;
+        }
+        if(t.left==null){           //get rid of left most element
+            t=null;
+        }
+        
+        return t;
+    }
+    
+
+     public void add(int v){         //call insertTree to insert value v
+        root = insertTree(v,root);
+    }
+    
+    public boolean isIn(int v){     //checks if an element is in the tree
+      /*  //boolean check = false;
+        c = searchTree(v,root);    //call searchTree to check if values exists
+        
+        return c;*/
+      if (root == null) {
+          return false; }
+      else {
+          TNode t = root;  //until an element with no children(meaning can't go further into tree)
+            while (t!= null){
+            if(v<t.element){                   //if element is smaller branch left
+                t = t.left;            
+            }else if(v>t.element){                 //if element is bigger branch right
+                t = t.right;            
+            }
+            else {
+                return true;
+            }
+            }
+      }  return false;
+    
+    }
+    
+    
+    public boolean remove(int v){         //remove an element
+        boolean check = false;
+        check = searchTree(v,root);       //check if exists
+        if(check==true){                    //remove if exists
+            root = removeTree(v,root);
+            size--;    //decrements
+        }
+        return check;
+    }
+    
+  
+      public int size(){
+        return size;
+    }
+ 
+    public int height(){ //return the height, lenght of the root to the depthest
+       if (root==null)   //if root doesnt exist
+            return 0;
+        else 
+            return findHeight(root) - 1 ; //subtracting by 1
+    }
+     private int findHeight(TNode t){
+    int heightLeft = 0; //init both
+    int heightRight = 0;
+    if(t.left!=null)//isnt empty
+        heightLeft = findHeight(t.left);
+    if(t.right!=null)
+        heightRight = findHeight(t.right);
+    if(heightLeft > heightRight)
+        return heightLeft+1;
+    else
+    {
+        return heightRight+1;
+    }
+     } 
+ 
+    
+    public void printRec (TNode t){//prints integer stored in ubtree t in increasing order
+    if (t != null)
+    {
+    printRec(t.left); //increasinig order
+    System.out.print(t.element + " ");
+    printRec(t.right);
+    }
+    }
+    
+    public void printRec () //invokes
+    {
+     printRec(root);   
+    }
+    
+    public void printNonRec(){//nonrec increasing order
+    
+    MyStack a = new MyStack();//func clascall
+    System.out.println("This is printing with Stacks");
+    TNode temp = root; //temp assgn to root.  //keep the nodes in the path that are waiting to be visited
+    
+    while(temp!=null)//first node visited will be left one, if root not empty
+    {
+        a.push(temp); //leftmost node
+        temp = temp.left;
+    }
+
+    while(!a.isEmpty())//traverse tree, if no left child, pop and go to right
+    {
+        temp = a.pop();//visit top node
+        System.out.print(temp.element + " ");
+        if(temp.right!=null) //find next node
+        {
+            temp = temp.right;
+            while(temp!=null)
+            {
+                a.push(temp);//leftmost is the next visited
+                temp = temp.left;
+            }
+        }
+    }
+    }
+
+
+public void printLevelOrder()      
+{
+    System.out.println("This is printing using Queues");
+    MyQueue a = new MyQueue();
+    a.enqueue(root);
+    
+    //while(!a.isEmpty())   same thing anyways
+    while (a.getSize() >0)
+    {
+        TNode temp = a.dequeue();
+        System.out.print(temp.element + " ");
+        if(temp.left!=null)//enque left child
+            a.enqueue(temp.left);
+        if(temp.right!=null) //enque righ child
+            a.enqueue(temp.right);
+    }
+    System.out.println("");
+}  
+    
+}

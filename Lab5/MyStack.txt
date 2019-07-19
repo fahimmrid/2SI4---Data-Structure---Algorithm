@@ -1,0 +1,54 @@
+package lab5;
+
+/**
+ *
+ * @author Ridwan
+ */
+
+import java.util.EmptyStackException;
+
+public class MyStack {
+
+   private Node head;
+    int element; 
+    Node next; 
+
+    public MyStack()  //creates empty stack
+        {
+            head = null;   
+           }
+
+public boolean isEmpty() //if there is no nodde
+{
+return (head == null); //change body  of generateed methods
+    
+}
+
+
+public TNode top() throws EmptyStackException 
+{
+        
+ if (isEmpty())
+     throw new EmptyStackException();
+ else 
+     return(head.element);
+        
+}
+
+
+public void push(TNode e) {
+       head = new Node(e,head);
+}
+
+public TNode pop() throws EmptyStackException {
+    if (isEmpty())
+     throw new EmptyStackException();
+    else 
+    {
+     TNode e = head.element; //element to pop
+     head = head.next; //bypass 1st node
+     return e;
+    }
+    }
+}
+

@@ -1,0 +1,225 @@
+package wordlinkedlist;
+
+/**
+ *
+ * @author Ridwan-Al Fahim
+ */
+
+import java.lang.String;
+
+
+public class WordLinkedList 
+{
+
+
+    private int size;
+    private Node head;
+
+    public WordLinkedList() //empty
+    {
+        this.size = 0; //int store size of list (instances)
+        this.head = new Node(0, null); //reference begin of linked list  
+    }
+
+    public WordLinkedList(String[] arrayOfWords) 
+    {  //constructs a object and stores the words from arrayOfWords in the list
+
+        this.head = new Node(0, null);
+        for (int i = 0; i < arrayOfWords.length; i++) 
+        {
+            insert(arrayOfWords[i]);  
+        }
+    }
+
+    public int getSize() //return size of list/number of words
+    {
+        return size;   
+    }
+
+    public String getWordAt(int i) 
+    { // returns a new String object representing the word at position iin the list
+
+        Node temp;  
+        int n = size;  
+        if ((i > (n - 1))||(i < 0)) 
+        { 
+            throw new ArrayIndexOutOfBoundsException("This is not a valid Index!"); 
+        } 
+        else
+        {
+            int count = 0;
+            for (temp = head.next; temp != null; temp = temp.next)
+            {  
+                if (count == i)
+                { 
+                    break;
+                }
+                count++;
+            }
+            return (temp.word);
+        }
+    }
+
+    public void insert(String newword) 
+    {  //inster new word if neword not in list, does nothing elsewis
+        int count=0;
+        Node newnode;  
+        Node newhead = head; //temp pointer to first node of LL
+
+        if (newhead.next == null) //chk if list empty
+        { 
+            newhead.next = new Node(newword, null);
+            size = size + 1;
+        }
+        newhead = head; //inserts the data into a new node that will be the new first node of the list (after header)                
+        while (newhead.next != null) 
+        {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+            if (newhead.next.word.compareTo(newword) == 0) {
+                count = 1;//chk duplicate, chk elecment to data in each node
+                break;
+            }
+            newhead=newhead.next;
+        }
+        
+        if (count == 0) 
+        { 
+            newhead=head;
+            while (newhead.next != null) 
+            { 
+                if (newword.compareTo(newhead.next.word) < 0) 
+                {
+                    newnode = new Node(newword, newhead.next);
+                    newhead.next = newnode;
+                    size = size + 1; 
+                    break;
+                } 
+                else if (newhead.next.next == null)
+                { 
+                    newhead.next.next = new Node(newword, null);
+                    size = size + 1; 
+                    break;
+                }
+                newhead=newhead.next;           //  ++
+            }
+        }
+    }
+
+    public int find(String word) {  // returns the position of word is in this WordLinkedList or -1 if wordis not in this 
+
+        Node temp;
+        int index = -1;
+        for (temp=head;temp != null;temp=temp.next) 
+        {
+            if (word == temp.word) 
+            {  
+                return index;
+            }
+            index++;
+            
+        }
+        return -1; //if not in list index
+    }
+
+    public String remove(int i) 
+    {  
+        String s = " ";//init
+
+        if (((i < 0))||((i >= size))) 
+        {
+            throw new IndexOutOfBoundsException("This idex is not valid!");   
+        }
+        if (((i != 0))&&((i < size))) 
+        {
+            int temp = i - 1;
+            s = getWordAt(temp);
+            Node p= head.next;  //overhead of memo to store ref
+            while(p.next != null)   
+            {
+                
+                if (s == p.word) {  
+                    s = p.next.word;
+                    p.next = p.next.next;    
+                    size = size - 1;   
+                    break;
+                }
+                p=p.next;
+            }
+        } 
+        else if (i == 0) 
+        {
+            s = getWordAt(i);
+            Node p = head;  
+            p.next = p.next.next;  
+            size = size - 1;
+        }
+        return s;
+    }
+
+    public void mergeTo(WordLinkedList that) {  //removes all the words from that WordLinkedList and inserts them in this WordLinkedList
+
+
+        
+        Node merge = this.head; //one in this not inserted anymomre.
+        Node ThisList = this.head.next; 
+        Node ThatList = that.head.next; 
+
+        while (ThisList != null || ThatList == null || merge!= null  ) 
+        
+        {  
+            if (ThisList == null) 
+            {     
+                merge.next = ThatList;   
+                this.size += that.size;   //incriment
+                break;
+            } 
+            else if (ThatList == null) 
+            {   
+                break;
+            }
+            
+            if (ThisList.word.compareTo(ThatList.word) == 0) 
+            {  
+                ThisList = ThisList.next;   
+                this.size -= 1;     
+            } 
+            else if (ThisList.word.compareTo(ThatList.word) < 0) 
+            {   
+                merge = merge.next;   
+                ThisList = ThisList.next;  
+                
+            } 
+            else if (ThisList.word.compareTo(ThatList.word) > 0) 
+            { 
+                Node temp;
+                temp = ThatList;  
+                temp = temp.next;  
+                ThatList.next = ThisList; 
+                merge.next = ThatList;  
+                ThatList = temp; 
+                merge = merge.next; 
+                
+                this.size++; 
+                that.size--;  
+            }
+                    
+        }
+        that.head = null; 
+        that.size = 0;  
+    }
+
+    public String toString() {
+        String longString = "";
+        if (size == 0) {
+            longString = "The list is empty";
+        } else {
+            Node p = head.next;
+            longString = new String("");
+            for (; p.next != null; p = p.next) {
+                longString = longString + p.word + "\n";
+            }
+            longString = longString + p.word;
+        }
+        return longString;
+    }
+}
+
